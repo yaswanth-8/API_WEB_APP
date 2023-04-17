@@ -108,7 +108,7 @@ namespace API_WEB_APP.Controllers
                 con.Close();
                 return Ok();
             }
-            return StatusCode(400, "Insert Valid Data");
+           // return StatusCode(400, "Insert Valid Data");
         }
 
 
@@ -118,8 +118,19 @@ namespace API_WEB_APP.Controllers
 
         // PUT api/<EmployeeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, EmployeeModel emp)
         {
+            using (SqlConnection con = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+            {
+                con.Open();
+                SqlCommand _cmd = new SqlCommand("updateName", con);
+                _cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                _cmd.Parameters.AddWithValue("@id", id);
+                _cmd.Parameters.AddWithValue("@name", emp.Name);
+                _cmd.ExecuteNonQuery();
+                con.Close();
+                return Ok();
+            }
         }
 
         // DELETE api/<EmployeeController>/5
